@@ -7,7 +7,8 @@ import {
   Param,
   ParseIntPipe,
   Patch,
-  Post
+  Post,
+  ValidationPipe
 } from '@nestjs/common';
 import { CreateEventDTO } from './create-event.dto';
 import { UpdateEventDTO } from './update-event.dto';
@@ -51,7 +52,7 @@ export class EventsController {
   }
 
   @Post()
-  create(@Body() input: CreateEventDTO) {
+  create(@Body(ValidationPipe) input: CreateEventDTO) {
     this.repository.save({
       ...input,
       when: new Date(input.when)
