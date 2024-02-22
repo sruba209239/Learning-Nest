@@ -11,6 +11,7 @@ export class CreateEventDTO {
   @IsDateString()
   when: string;
 
-  @Length(5, 255)
+  @Length(5, 20, { groups: ['create'] })
+  @Length(10, 255, { groups: ['update'] })
   address: string;
 }
