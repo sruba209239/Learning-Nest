@@ -10,6 +10,7 @@ export class AppJapanService {
   ) {}
 
   getHello(): string {
+    console.log(process.env.DB_HOST);
     return `Hello world in japanese from ${this.app_name}, ${this.message}`;
   }
 }
