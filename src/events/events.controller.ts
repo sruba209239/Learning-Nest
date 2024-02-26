@@ -37,7 +37,7 @@ export class EventsController {
     return events;
   }
 
-  @Get('/practice')
+  @Get('practise')
   async findPractice() {
     return await this.repository.find({
       select: ['id', 'when'],
@@ -51,6 +51,14 @@ export class EventsController {
       order: {
         id: 'DESC'
       }
+    });
+  }
+
+  @Get('/practise2')
+  async practise2() {
+    return await this.repository.findOne({
+      where: { id: 1 },
+      relations: ['attendees']
     });
   }
 
