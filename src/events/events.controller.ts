@@ -4,7 +4,10 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
+  HttpStatus,
   Logger,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -53,8 +56,13 @@ export class EventsController {
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    console.log(typeof id);
-    return (await this.repository.findBy({ id: id })) ?? "Event doesn't exist";
+    // console.log(typeof id);
+    const event =
+      (await this.repository.findBy({ id: id })) ?? "Event doesn't exist";
+    if (typeof event === 'string' || event?.length === 0) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+    return event;
   }
 
   @Post()
@@ -74,6 +82,10 @@ export class EventsController {
     @Body(new ValidationPipe({ groups: ['update'] })) input: UpdateEventDTO
   ) {
     let rowToBeUpdated = await this.repository.findOneBy({ id: id });
+
+    if (!rowToBeUpdated) {
+      throw new NotFoundException();
+    }
     rowToBeUpdated = {
       ...rowToBeUpdated,
       ...input,
@@ -87,6 +99,9 @@ export class EventsController {
   @HttpCode(204)
   async delete(@Param('id') id) {
     const event = await this.repository.findBy({ id: id });
+    if (!event) {
+      throw new NotFoundException();
+    }
     await this.repository.remove(event);
   }
 }
